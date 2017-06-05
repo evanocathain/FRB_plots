@@ -1,10 +1,14 @@
+#!/usr/bin/python
 
-# Creates overview plots of candidates found by Heimdall.
-# This plotting program distinguishes between noise, RFI, erroneous candidates, and valid candidates, plotting them all in different ways.
+# Name: Heimdall Overview Plotter
+#
+# Description: Creates overview plots of candidates found by Heimdall. It distinguishes 
+# between noise, RFI, erroneous candidates, and valid candidates, plotting them all in different ways.
 # Output is an overview plot called overview.png in the directory of the program.
-
-# Emily Petroff 2012
-# Code originally written by Ben Barsdell and source code can be found in /lustre/home/bbarsdell/code/c_cpp/heimdall/
+#
+# History: 2010: created by Ben Barsdell
+#          2012: edited by Emily Petroff
+#          2017: edited by Evan Keane
 
 import numpy as np
 
@@ -56,7 +60,11 @@ class TimeDMPlot(object):
         
     def plot(self, data):
         self.g.reset()
-        self.g('set size 1,0.65')
+        self.g('set tmargin at screen 0.6')
+        self.g('set bmargin at screen 0.0')
+        self.g('set rmargin at screen 1.0')
+        self.g('set lmargin at screen 0.0')
+        self.g('set size 1.0,0.6')
         self.g('set origin 0.0,0.0')
         self.g('unset key')
         self.g('set autoscale x')
@@ -72,58 +80,19 @@ class TimeDMPlot(object):
         self.g('set grid noxtics nomxtics ytics mytics lt 9 lw 0.2, ls 12')
         self.g('set ytics 10')
         self.g('set mytics 10')
-        self.g('set y2tics 10 out mirror format ""')
+        self.g('set y2tics 10 mirror format ""')
         self.g('set my2tics 10')
-#	self.g('set xtics 1000')  ####for long pointings      
 	self.g('set xtics 60')
-#	self.g('set x2tics 1000 out mirror format ""')
-        self.g('set x2tics 60 out mirror format ""')
+        self.g('set x2tics 60 mirror format ""')
         self.g('set mxtics 4')
         self.g('set mx2tics 4')
         self.g('set xlabel "Time [s]"')
         self.g('set ylabel "DM + 1 [pc cm^{-3}]"')
+        self.g('set format y "10^{%T}"')
         self.g('min(x,y) = x<=y?x:y')
         self.g('max(x,y) = x>=y?x:y')
-	self.g('set label "TEST" at 0.8, 0.4')
 
         categories = []
-
-      #  if len(data['noise']) > 0:
-      #     noise = Gnuplot.Data(data['noise']['snr'],
-      #                           data['noise']['time'],
-      #                           data['noise']['dm'],
-      #                           using="2:($3+%f):(($1-%f)/2.0+0.5)" \
-      #                               % (self.dm_base,self.snr_min),
-      #                           with_="p pt 2 lt 9 lw 0.5 ps variable")
-      #      categories.append(noise)
-
-      #  if len(data['coinc']) > 0:
-      #      coinc = Gnuplot.Data(data['coinc']['snr'],
-      #                           data['coinc']['time'],
-      #                           data['coinc']['filter'],
-      #                           data['coinc']['dm'],
-      #                           using="2:($4+%f):(min(($1-%f)/2.0+0.9,5)):3" \
-      #                               % (self.dm_base,self.snr_min),
-      #                           with_="p pt 3 lw 0.25 lt palette ps variable")
-      #      categories.append(coinc)
-            
-      #  if len(data['fat']) > 0:
-      #      fat   = Gnuplot.Data(data['fat']['snr'],
-      #                           data['fat']['time'],
-      #                           data['fat']['filter'],
-      #                           data['fat']['dm'],
-      #                           using="2:($4+%f):(min(($1-%f)/2.0+0.9,5)):3" \
-      #                               % (self.dm_base,self.snr_min),
-      #                           with_="p pt 6 lw 0.5 lt palette ps variable")
-      #      categories.append(fat)
-        
-      #      fatlabels   = Gnuplot.Data(data['fat']['beam'],
-      #                                 data['fat']['time'],
-      #                                 data['fat']['dm'],
-      #                                 using='2:($3+%f):(sprintf("%%d",$1+1))' \
-      #                                     % (self.dm_base),
-      #                                 with_='labels center font ",7" offset 0,0.05 textcolor rgbcolor "gray"')
-      #      categories.append(fatlabels)
 
         if len(data['lowdm']) > 0:
             lowdm = Gnuplot.Data(data['lowdm']['snr'],
@@ -178,80 +147,55 @@ class DMSNRPlot(object):
         self.dt = 64e-6
     def plot(self, data):
         self.g.reset()
-        self.g('set size 0.4,0.35')
-        self.g('set origin 0.6,0.65')
+        # define the plotting region
+        self.g('set tmargin at screen 1.0')
+        self.g('set bmargin at screen 0.65')
+        self.g('set rmargin at screen 0.84')
+        self.g('set lmargin at screen 0.56')
+        self.g('set size 0.28,0.35')
+        self.g('set origin 0.54,0.65')
+        # define the plot labelling, axes, ranges, format etc.
         self.g('unset key')
         self.g('set xrange[1.0:10000]')
         self.g('set x2range[1.0:10000]')
         self.g('set logscale x')
         self.g('set logscale x2')
-        self.g('set ytics 10 ')
+        self.g('set ytics 10')
         self.g('set mytics 10')
-        self.g('set y2tics 10 out mirror format ""')
+        self.g('set y2tics 10 mirror format ""')
+        self.g('set x2tics 10 mirror format ""')
         self.g('set my2tics 10')
         self.g('set ytics mirror')
+        self.g('set format y ""')
         self.g("set style line 12 lc 'grey'")
         self.g('set pointsize 5')
         self.g('set grid xtics mxtics noytics nomytics lt 9 lw 0.2 ls 12')
         self.g('set logscale y')
         self.g('set logscale y2')
-        self.g('set yrange[1:100]')
-        self.g('set y2range[1:100]')
+        self.g('set yrange[1:100]') # arbitrary!
+        self.g('set y2range[1:100]') # arbitrary!
+        self.g('set yrange[6.0:25]') # arbitrary! but at least makes sense for my purposes for SUPERB Paper 1 -> to do: fix later
+        self.g('set y2range[6.0:25]') # arbitrary! but at least makes sense for my purposes for SUPERB Paper 1 -> to do: fix later
         self.g('set cbrange[-0.5:12.5]')
         self.g('set palette positive nops_allcF maxcolors 13 gamma 1.5 color model RGB')
         self.g("set palette defined ( 0 'green', 1 'cyan', 2 'magenta', 3 'orange' )")
-        self.g('set colorbox')
+        self.g('set colorbox vertical user origin 0.9,0.65 size 0.025,0.35')
         self.g('snr_min = %f' % self.snr_base)
-#        self.g('unset mytics')
-#        self.g('unset my2tics')
-#        self.g('set xtics ("6 " 6-snr_min, "6.1 " 6.1-snr_min, "6.4 " 6.4-snr_min, "7 " 7-snr_min, "8 " 8-snr_min, "10 " 10-snr_min, "13 " 13-snr_min, "20 " 20-snr_min, "40 " 40-snr_min, "100 " 100-snr_min)')
-#        self.g('set y2tics ("6" 6-snr_min, "6.1 " 6.1-snr_min, "6.4 " 6.4-snr_min, "7 " 7-snr_min, "8 " 8-snr_min, "10 " 10-snr_min, "13 " 13-snr_min, "20 " 20-snr_min, "40 " 40-snr_min, "100 " 100-snr_min) out mirror format ""')
-        #self.g('set cbtics 1 format "2^%g"')
         self.g('set cbtics 1 format ""')
         filter_tics = [2000*self.dt * 2**i for i in range(self.max_filter+1)]
-#        self.g('set cbtics add ("64 us" 0, "128 us" 1, "256 us" 2, "512 us" 3, "1 ms" 4, "2 ms" 5, "4 ms" 6, "8 ms" 7, "16 ms" 8, "32 ms" 9, "64 ms" 10, "128 ms" 11, "256 ms" 12)')
         self.g('set cbtics add ('+', '.join(['"%.4g" %i'%(x,i) for i,x in enumerate(filter_tics)])+')')
-        self.g('set xlabel "DM+1 [pc cm^{-3}]"')
+        self.g('set x2label "DM+1 [pc cm^{-3}]"')
         self.g('set ylabel "SNR"')
-        #self.g('set cblabel "log_{2} boxcar width"')
-        self.g('set cblabel "Boxcar width [ms]"')
+        self.g('set ylabel ""')
+        self.g('set y2label "S/N" offset screen -0.03,0.03 rotate by 270')
+        self.g('set format y ""')
+        self.g('set format y2 "10^{%T}"')
+        self.g('set format x ""')
+        self.g('set format x2 "10^{%T}"')
+#        self.g('set cblabel "Boxcar width [ms]"')
+        self.g('set label "Width [ms]" at screen 0.9,1.025 front')
 
         categories = []
-
-       # if len(data['noise']) > 0:
-       #     noise = Gnuplot.Data(data['noise']['snr'],
-       #                          data['noise']['dm'],
-       #                          using="($2+%f):($1-%f)" \
-       #                              % (self.dm_base,self.snr_base),
-       #                          with_="p pt 2 ps 0.5 lt 9")
-       #     categories.append(noise)
-            
-       # if len(data['lowdm']) > 0:
-       #     lowdm = Gnuplot.Data(data['lowdm']['snr'],
-       #                          data['lowdm']['dm'],
-       #                          data['lowdm']['filter'],
-       #                          using="($2+%f):($1-%f):3" \
-       #                              % (self.dm_base,self.snr_base),
-       #                          with_="p pt 6 ps 0.8 lt palette")
-       #     categories.append(lowdm)
-
-       # if len(data['fat']) > 0:
-       #     fat   = Gnuplot.Data(data['fat']['snr'],
-       #                          data['fat']['dm'],
-       #                          data['fat']['filter'],
-       #                          using="($2+%f):($1-%f):3" \
-       #                              % (self.dm_base,self.snr_base),
-       #                          with_="p pt 6 ps 0.8 lw 0.3 lt palette")
-       #     categories.append(fat)
-
-       # if len(data['coinc']) > 0:
-       #     coinc = Gnuplot.Data(data['coinc']['snr'],
-       #                          data['coinc']['dm'],
-       #                          data['coinc']['filter'],
-       #                          using="($2+%f):($1-%f):3" \
-       #                              % (self.dm_base,self.snr_base),
-       #                          with_="p pt 3 ps 0.8 lw 0.3 lt palette")
-       #     categories.append(coinc)
 
         if len(data['valid']) > 0:
             valid = Gnuplot.Data(data['valid']['snr'],
@@ -262,13 +206,13 @@ class DMSNRPlot(object):
                                  with_="p pt 7 ps 0.8 lt palette")
             categories.append(valid)
             
-        #self.g.plot(noise, lowdm, coinc, fat, valid)
         self.g.plot(*categories)
 
 class DMHistogram(object):
     def __init__(self, cands=None):
         self.dm_min   = 0.10
         self.dm_max   = 1010.0
+        self.dm_max   = 10010.0
         self.min_bins = 30
         self.hist     = None
         if cands is not None:
@@ -326,19 +270,27 @@ class NSNRPlot(object):
         self.dt = 64e-6
     def plot(self, data):
         self.g.reset()
-        self.g('set size 0.325,0.35')
-        self.g('set origin 0.3,0.65')
+        self.g('set tmargin at screen 1.0')
+        self.g('set bmargin at screen 0.65')
+        self.g('set rmargin at screen 0.56')
+        self.g('set lmargin at screen 0.28')
+        self.g('set size 0.28,0.35')
+        self.g('set origin 0.28,0.65')
+        self.g('unset ylabel')
+        self.g('set format y ""')
         self.g('unset key')
         self.g('set xrange[6.0:100]')
         self.g('set x2range[6.0:100]')
+        self.g('set xrange[6.0:25]') # hack
+        self.g('set x2range[6.0:25]') # hack
         self.g('set xtics 10')
         self.g('set mxtics 10')
-	self.g('set x2tics 10 out mirror format ""')
+	self.g('set x2tics 10 mirror format ""')
         self.g('set logscale x')
         self.g('set logscale x2')
         self.g('set ytics 10')
         self.g('set mytics 10')
-        self.g('set y2tics 10 out mirror format ""')
+        self.g('set y2tics 10 mirror format ""')
         self.g('set my2tics 10')
         self.g('set ytics mirror')
         self.g("set style line 12 lc 'grey'")
@@ -352,8 +304,11 @@ class NSNRPlot(object):
         self.g("set palette defined ( 0 'green', 1 'cyan', 2 'magenta', 3 'orange' )")
         self.g('snr_min = %f' % self.snr_base)
 
-        self.g('set xlabel "S/N"')
-        self.g('set ylabel "Candidate count"')
+        self.g('set x2label "S/N"')
+#        self.g('set ylabel "Candidate count"')
+        self.g('set ylabel ""')
+        self.g('set format x ""')
+        self.g('set format x2 "10^{%T}"')
 
 	beams = []
 	for b,snr_hist in enumerate(data):
@@ -373,7 +328,11 @@ class DMHistPlot(object):
         self.dt = 64e-6
     def plot(self, data):
         self.g.reset()
-        self.g('set size 0.325,0.35')
+        self.g('set tmargin at screen 1.0')
+        self.g('set bmargin at screen 0.65')
+        self.g('set rmargin at screen 0.28')
+        self.g('set lmargin at screen 0.0')
+        self.g('set size 0.28,0.35')
         self.g('set origin 0.0,0.65')
         self.g('unset key')
         self.g('set logscale x')
@@ -382,23 +341,27 @@ class DMHistPlot(object):
         self.g('set x2range[1:10000]')
         self.g('set logscale y')
         self.g('set logscale y2')
-        self.g('set yrange [1:2000]')
-        self.g('set y2range [1:2000]')
+        self.g('set yrange [0.5:2000]')
+        self.g('set y2range [0.5:2000]')
         self.g('set xtics 10')
         self.g('set mxtics 10')
-        self.g('set x2tics 10 out mirror format ""')
+        self.g('set x2tics 10 mirror format ""')
         self.g('set mx2tics 10')
         self.g('set ytics 10')
-        self.g('set y2tics 10 out mirror format ""')
+        self.g('set y2tics 10 mirror format ""')
         self.g('set mytics 10')
         self.g('set my2tics 10')
         self.g("set style line 12 lc 'grey'")
         self.g('set grid noxtics nomytics xtics mxtics lt 9 lw 0.2, ls 12')
         #self.g('set key inside top center horizontal samplen 2 maxcols 2')
-        self.g('set key top left horizontal samplen 2')
-        self.g('set xlabel "DM+1 [pc cm^{-3}]')
+        self.g('set key box top right horizontal samplen 2')
+        self.g('set key spacing 0.9')
+        self.g('set x2label "DM+1 [pc cm^{-3}]')
         self.g('set ylabel "Candidate count"')
-        
+        self.g('set format y "10^{%T}"')
+        self.g('set format x ""')
+        self.g('set format x2 "10^{%T}"')
+
         beams = []
         for b,dm_hist in enumerate(data):
             beams.append( Gnuplot.Data(dm_hist['bins'],
@@ -412,7 +375,9 @@ class DMHistPlot(object):
 
 if __name__ == "__main__":
     import argparse
-    import Gnuplot    
+#    import Gnuplot    
+    import Gnuplot, Gnuplot.funcutils
+    Gnuplot.GnuplotOpts.default_term = 'x11' # stops gnuplot-py freaking out if it fails to find Aqua terminal on osx
 
     parser = argparse.ArgumentParser(description="Generates data for Heimdall overview plots.")
     parser.add_argument('-f', default="candidates_all.cand")
@@ -426,13 +391,15 @@ if __name__ == "__main__":
     parser.add_argument('-filter_cut', type=int, default=99)
     parser.add_argument('-filter_max', type=int, default=12)
     parser.add_argument('-min_bins', type=int, default=30)
+    parser.add_argument('-g', default="ps")
     parser.add_argument('-interactive', action="store_true")
     args = parser.parse_args()
     
     filename = args.f
     nbeams = args.nbeams
     interactive = args.interactive
-    
+    plotdevice = args.g
+
     # Load candidates from all_candidates file
     all_cands = \
         np.loadtxt(filename,
@@ -500,11 +467,16 @@ if __name__ == "__main__":
     print "Generating plots..."
     g = Gnuplot.Gnuplot(debug=0)
     if not interactive:
-        #g('set terminal pngcairo transparent enhanced font "arial,10" size 1280, 960')
-        g('set terminal png enhanced font "arial,10" size 1280, 960')
-        g('set terminal postscript enhanced color solid font "arial,10" size 1280, 960')
-        g('set output "overview.png"')
-        print "Writing plots to overview.png"
+        if plotdevice == "ps":
+            g('set terminal postscript enhanced color solid')
+            g('set output "overview.ps"')
+            print "Writing plots to overview.ps"
+        elif plotdevice == "png":
+            g('set terminal png enhanced font "arial,10" size 1280, 960')
+            g('set output "overview.png"')
+            print "Writing plots to overview.png"
+    g('set size 1,1')
+    g('set origin 0,0')
     g('set multiplot')
     timedm_plot = TimeDMPlot(g)
     dmsnr_plot  = DMSNRPlot(g)
@@ -514,6 +486,7 @@ if __name__ == "__main__":
     dmsnr_plot.plot(categories)
     nsnr_plot.plot(snr_hists)
     dmhist_plot.plot(dm_hists)
+#    g('plot "superb.jpg" binary filetype=jpg with rgbimage')
     g('unset multiplot')
 
     if interactive:
