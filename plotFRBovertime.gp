@@ -15,6 +15,7 @@ set term x11
 set key top left
 
 set title "FRB Discoveries over Time"
+
 set ylabel "Number of FRBs"
 set xlabel "Year"
 
@@ -25,7 +26,12 @@ set boxwidth 1.0
 
 set xtics 1
 
-set label "{/Symbol S} FRBs = 53" at 2001.5, 6 font ",20"
+# Add some updated labels for when this plot was made
+num_frbs=system("awk '{for (i=2; i<=NF; i++) s+=$i}END{print s}' all_FRBs")
+set label sprintf("{/Symbol S} FRBs %s", num_frbs) front at -0.5, 13 font ", 20"
+timestamp=system("date -u \"+%Y-%m-%d UTC\"")
+set label timestamp front at -0.5, 12 font ", 10"
+set label "\\\@evanocathain" front at -0.5, 11.5 font ", 10" textcolor rgb '#1DCAFF'
 
 set yrange[0:17.5]
 plot "all_FRBs" using 2:xtic(1) title 'Parkes', '' u 3 title 'UTMOST', '' u 4 title 'GBT', '' u 5 title 'Arecibo', '' u 6 title 'ASKAP', '' u 7 title 'DSA-10'
