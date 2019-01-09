@@ -5,8 +5,8 @@
 # A script to plot FRBs as a function of time 
 # for all telescopes that have found an FRB
 #
-# Current up to date list of all FRBs includes
-# unpublished FRBs so this file is in .gitignore
+# Published (on FRBCAT) FRBs list shown, full list
+# including unpublished FRBs is in .gitignore
 
 #set term x11
 set term postscript enhanced color solid
