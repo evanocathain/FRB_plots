@@ -38,5 +38,5 @@ set label "\\\@evanocathain" front at -0.5, 24 font ", 10" textcolor rgb '#1DCAF
 # Do a H1-2018 note
 #set label sprintf("(Jan-Jun)") front at 16.4, -1.4 font ", 10"
 
-set yrange[0:36.5]
-plot "all_FRBs" using 2:xtic(1) title 'Parkes', '' u 3 title 'UTMOST', '' u 4 title 'GBT', '' u 5 title 'Arecibo', '' u 6 title 'ASKAP', '' u 7 title 'CHIME' lt 8
+set yrange[0:44.5]
+plot "all_FRBs" using 2:xtic(1) title 'Parkes', '' u 3 title 'UTMOST', '' u 4 title 'GBT', '' u 5 title 'Arecibo', '' u 6 title 'ASKAP', '' u 7 title 'CHIME' lt 8, '' u 8 title 'DSA-10' lt 7, '' u 9 title 'WSRT' lt rgb '#7FFFD4'
